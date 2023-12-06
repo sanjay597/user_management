@@ -17,7 +17,7 @@ class Welcome extends CI_Controller
 
     public function index()
     {
-        if ($_SESSION['id']) {
+        if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
             header('Location:' . base_url() . $_SESSION['role'] . '/dashboard');
         } else {
             $this->load->view('login');
@@ -50,7 +50,7 @@ class Welcome extends CI_Controller
         $_SESSION['id'] = $validate_login['data']['id'];
         $_SESSION['role'] = $validate_login['data']['role'];
         $_SESSION['name'] = $validate_login['data']['name'];
-        $validate_login['data']['dashboard_page'] = $validate_login['data']['role'] == 'user' ? 'dashboard' : ($validate_login['data']['role'] . '/dashboard');
+        $validate_login['data']['dashboard_page'] = ($validate_login['data']['role'] . '/dashboard');
         echo json_encode($validate_login);
         exit();
     }
@@ -78,7 +78,7 @@ class Welcome extends CI_Controller
 
     public function addUser()
     {
-        if ($_SESSION['role'] == 'user') {
+        if (!isset($_POST['userId']) && $_SESSION['role'] == 'user') {
             $this->errorResponse['message'] = 'Access denied';
             echo json_encode($this->errorResponse);
             exit();
@@ -88,27 +88,44 @@ class Welcome extends CI_Controller
             echo json_encode($this->errorResponse);
             exit();
         }
-        $keyArr = ['name', 'mobile', 'email', 'address', 'gender', 'dob', 'profile_pic', 'signature'];
+        $picArr = [];
+        if (!isset($_POST['userId'])) {
+            $picArr = ['profile_pic', 'signature'];
+        }
+        $keyArr = ['name', 'mobile', 'email', 'address', 'gender', 'dob'];
+        array_merge($keyArr, $picArr);
         $this->validateParams($keyArr, $_POST);
         //upload profile pic
-        $destinationPath = "assets/user/profile/";
-        $profile_capture_part1 = explode(";base64,", $_POST['profile_pic']);
-        $image_base641 = base64_decode($profile_capture_part1[1]);
-        $extPart1 = explode(':', $profile_capture_part1[0]);
-        $ext1 = explode('/', $extPart1[1]);
-        $myimgName1 = 'profile_pic_' . time() . '.' . $ext1[1];
-        $file1 = $destinationPath . $myimgName1;
-        file_put_contents($file1, $image_base641);
+        if (!empty($_POST['profile_pic'])) {
+            $destinationPath = "assets/user/profile/";
+            $profile_capture_part1 = explode(";base64,", $_POST['profile_pic']);
+            $image_base641 = base64_decode($profile_capture_part1[1]);
+            $extPart1 = explode(':', $profile_capture_part1[0]);
+            $ext1 = explode('/', $extPart1[1]);
+            $myimgName1 = 'profile_pic_' . time() . '.' . $ext1[1];
+            $file1 = $destinationPath . $myimgName1;
+            file_put_contents($file1, $image_base641);
+        } else {
+            $file1 = $_POST['old_pic'];
+        }
 
         //upload signature
-        $destinationPathSign = "assets/user/signature/";
-        $sign_capture_part1 = explode(";base64,", $_POST['signature']);
-        $image_base642 = base64_decode($sign_capture_part1[1]);
-        $extPart1 = explode(':', $sign_capture_part1[0]);
-        $ext1 = explode('/', $extPart1[1]);
-        $myimgName2 = 'signature' . time() . '.' . $ext1[1];
-        $file2 = $destinationPathSign . $myimgName2;
-        file_put_contents($file2, $image_base642);
+        if (!empty($_POST['signature'])) {
+            $destinationPathSign = "assets/user/signature/";
+            $sign_capture_part1 = explode(";base64,", $_POST['signature']);
+            $image_base642 = base64_decode($sign_capture_part1[1]);
+            $extPart1 = explode(':', $sign_capture_part1[0]);
+            $ext1 = explode('/', $extPart1[1]);
+            $myimgName2 = 'signature' . time() . '.' . $ext1[1];
+            $file2 = $destinationPathSign . $myimgName2;
+            file_put_contents($file2, $image_base642);
+        } else {
+            $file2 = $_POST['old_sign'];
+        }
+        $extraArr = [];
+        if (!isset($_POST['userId'])) {
+            $extraArr = ['created_by' => $_SESSION['id'], 'created_date' => date('Y-m-d H:i:s')];
+        }
         $insertData = [
             'name' => $this->input->post('name'),
             'mobile' => $this->input->post('mobile'),
@@ -119,20 +136,29 @@ class Welcome extends CI_Controller
             'profile_pic' => $file1,
             'signature' => $file2,
             'role' => 'user',
+            'updated_by' => $_SESSION['id'],
+            'updated_date' => date('Y-m-d H:i:s'),
         ];
-        $res = $this->db->insert('user_master', $insertData);
+        array_merge($insertData, $extraArr);
+        if (isset($_POST['userId'])) {
+            $res = $this->db->set($insertData)->where('id', $_POST['userId'])->update('user_master');
+        } else {
+            $res = $this->db->insert('user_master', $insertData);
+        }
         $this->errorResponse['page_url'] = $_SESSION['role'] . '/dashboard';
         if ($res) {
-            $userId = $this->db->insert_id();
-            $enc_key = PASSWORD_ENC_KEY;
-            $password = rand(11111, 999999);
-            $this->db->set('password', "AES_ENCRYPT('{$password}', '{$enc_key}')", false)->where('id = ' . $userId)->update('user_master');
+            $userId = isset($_POST['userId']) ? isset($_POST['userId']) : $this->db->insert_id();
+            if (!isset($_POST['userId'])) {
+                $enc_key = PASSWORD_ENC_KEY;
+                $password = rand(11111, 999999);
+                $this->db->set('password', "AES_ENCRYPT('{$password}', '{$enc_key}')", false)->where('id = ' . $userId)->update('user_master');
+            }
             $this->errorResponse['success'] = 1;
-            $this->errorResponse['message'] = 'User created successfully';
+            $this->errorResponse['message'] = 'User ' . (isset($_POST['userId']) ? "updated" : "created") . ' successfully';
             echo json_encode($this->errorResponse);
             exit();
         } else {
-            $this->errorResponse['message'] = 'User creation failed';
+            $this->errorResponse['message'] = 'User ' . (isset($_POST['userId']) ? "updation" : "creation") . ' failed';
             echo json_encode($this->errorResponse);
             exit();
         }
@@ -161,8 +187,8 @@ class Welcome extends CI_Controller
             echo json_encode($this->errorResponse);
             exit();
         }
-		$res = $this->db->set('status', '1-status', false)->where('id', $this->input->post('id'))->update('user_master');
-		if ($res) {
+        $res = $this->db->set('status', '1-status', false)->where('id', $this->input->post('id'))->update('user_master');
+        if ($res) {
             $this->errorResponse['success'] = 1;
             $this->errorResponse['message'] = 'User status changed successfully';
             echo json_encode($this->errorResponse);
@@ -172,5 +198,27 @@ class Welcome extends CI_Controller
             echo json_encode($this->errorResponse);
             exit();
         }
+    }
+
+    public function editUser($id)
+    {
+        if ($_SESSION['role'] == 'user') {
+            $this->errorResponse['message'] = 'Access denied';
+            echo json_encode($this->errorResponse);
+            exit();
+        }
+        $userData = $this->db->select('id, name, mobile, email, address, gender, dob, profile_pic, signature')->from('user_master')->where('id', $id)->get()->row_array();
+        if (!$userData) {
+            $this->errorResponse['message'] = 'User data not found';
+            echo json_encode($this->errorResponse);
+            exit();
+        }
+        $this->load->view($_SESSION['role'] . '/editUser', ['data' => $userData]);
+    }
+
+    public function logout()
+    {
+        session_destroy();
+        redirect(base_url());
     }
 }

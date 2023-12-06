@@ -5,7 +5,7 @@
             <span>All Users</span>
           </a>
         </li>
-
+      
         <li class="nav-item">
           <a class="nav-link" href="<?php echo base_url() . $_SESSION['role'] . '/addUser'; ?>">
             <i class="fas fa-fw fa-users"></i>

@@ -3,7 +3,7 @@
 
   <head>
 
-<title>Admin - Dashboard</title>
+<title>Super Admin</title>
 
 <!-- Bootstrap core CSS-->
 <?php echo link_tag('assets/vendor/bootstrap/css/bootstrap.min.css'); ?>
@@ -25,19 +25,49 @@
       <!-- Sidebar -->
             <?php include APPPATH.'views/includes/sidebar.php';?>
       <div id="content-wrapper">
+        <input type="hidden" id="base_url" value="<?php echo base_url() ?>"/>
 
         <div class="container-fluid">
 
           <!-- Breadcrumbs-->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
-              <a href="#">Dashboard</a>
+              <a href="#">All Users</a>
             </li>
             <li class="breadcrumb-item active">Overview</li>
           </ol>
 
           <!-- Icon Cards-->
           <div class="row">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Mobile</th>
+                      <th>Email id</th>
+                      <th>Address</th>
+                      <th>Gender</th>
+                      <th>DOB</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                      <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Mobile</th>
+                      <th>Email id</th>
+                      <th>Address</th>
+                      <th>Gender</th>
+                      <th>DOB</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </tfoot>
+                  <tbody id="users_data">
+                  </tbody>
           </div>
         </div>
         <!-- /.container-fluid -->
@@ -58,10 +88,15 @@
 
 
     <script src="<?php echo base_url('assets/vendor/jquery/jquery.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/js/users.js'); ?>" defer></script>
     <script src="<?php echo base_url('assets/vendor/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
     <!-- Core plugin JavaScript-->
     <script src="<?php echo base_url('assets/vendor/jquery-easing/jquery.easing.min.js'); ?>"></script>
 
+    <!-- Page level plugin JavaScript-->
+    <script src="<?php echo base_url('assets/vendor/chart.js/Chart.min.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/vendor/datatables/jquery.dataTables.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/vendor/datatables/dataTables.bootstrap4.js'); ?>"></script>
     <!-- Custom scripts for all pages-->
     <script src="<?php echo base_url('assets/js/sb.min.js'); ?>"></script>
 

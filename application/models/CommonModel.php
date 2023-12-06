@@ -24,7 +24,7 @@ class CommonModel extends CI_Model
 
     public function getUsers()
     {
-        $query = "SELECT id, name, role, mobile, email, address, gender, dob, status, created_by, created_date FROM user_master WHERE role = 'user'";
+        $query = "SELECT id, name, role, mobile, email, address, gender, dob, status, created_by, created_date FROM user_master WHERE role = 'user' ORDER BY id DESC";
         $res = $this->db->query($query);
         if ($res->num_rows() > 0) {
             $response = ['success' => 1, 'data' => $res->result_array()];

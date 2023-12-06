@@ -31,8 +31,8 @@ let getUsers = async () => {
         let k = 1;
         for (let i = 0; i < ajaxData.data.length; i++) {
             let userData = ajaxData.data[i];
-            let editUserBtn = ajaxData.can_edit ? `<input type="button" class="btn btn-info" value="Edit" onclick="editUser(` + userData.id + `)"/>` : '';
-            let deleteUserBtn = ajaxData.can_delete ? `<input type="button" class="btn btn-` + (userData.status == 1 ? 'success' : 'danger') + `" value="` + (userData.status == 1 ? 'Active' : 'Inactive') + `" onclick="deleteUser(` + userData.id + ',' + userData.status + `)"/>` : '';
+            let editUserBtn = ajaxData.can_edit ? `<input type="button" class="btn btn-info" value="Edit" onclick="editUser(` + userData.id + `)"/> | ` : '';
+            let deleteUserBtn = ajaxData.can_delete ? `<input type="button" class="btn btn-` + (userData.status == 0 ? 'success' : 'danger') + `" value="` + (userData.status == 1 ? 'Inactive' : 'Active') + `" onclick="deleteUser(` + userData.id + ',' + userData.status + `)"/>` : '';
             tbodyData += `<tr>`;
             tbodyData += `<td>` + k + `</td>`;
             tbodyData += `<td>` + userData.name + `</td>`;
@@ -42,7 +42,7 @@ let getUsers = async () => {
             tbodyData += `<td>` + userData.gender + `</td>`;
             tbodyData += `<td>` + userData.dob + `</td>`;
             tbodyData += `<td>` + (userData.status == 1 ? 'Active' : 'Inactive') + `</td>`;
-            tbodyData += `<td>` + editUserBtn + ' | ' + deleteUserBtn + `</td>`;
+            tbodyData += `<td>` + editUserBtn + deleteUserBtn + `</td>`;
             k++;
         }
         $('#users_data').html(tbodyData);
@@ -97,7 +97,9 @@ let addUser = async () => {
     let data = { name: name, mobile: mobile, email: email, address: address, gender: gender, dob: dob, profile_pic: profile_pic_baseimg, signature: signature_baseimg };
     let ajaxData = await ajaxCall(url, data);
     alert(ajaxData.message);
-    window.location = base_url + ajaxData.page_url;
+    if(ajaxData.page_url != undefined) {
+        window.location = base_url + ajaxData.page_url;
+    }
 }
 
 function getBase64(file) {
@@ -114,7 +116,7 @@ function getBase64(file) {
 }
 
 function editUser(id) {
-
+    window.location = base_url + 'editUser/' + id;
 }
 
 let deleteUser = async (id, status) => {
@@ -124,5 +126,59 @@ let deleteUser = async (id, status) => {
         let ajaxData = await ajaxCall(url, data);
         getUsers();
         alert(ajaxData.message);
+    }
+}
+
+let updateUser = async () => {
+    let userId = $('#userId').val();
+    let name = $('#name').val();
+    if (name.trim() == '') {
+        alert('Please enter name');
+        return;
+    }
+    let mobile = $('#mobile').val();
+    if (mobile.trim() == '') {
+        alert('Please enter mobile number');
+        return;
+    }
+    let email = $('#email').val();
+    if (email.trim() == '') {
+        alert('Please enter email');
+        return;
+    }
+    let address = $('#address').val();
+    if (address.trim() == '') {
+        alert('Please enter address');
+        return;
+    }
+    let gender = $('#gender').val();
+    if (gender.trim() == '') {
+        alert('Please enter gender');
+        return;
+    }
+    let dob = $('#dob').val();
+    if (dob.trim() == '') {
+        alert('Please enter dob');
+        return;
+    }
+    let profile_pic_baseimg = '';
+    let profile_pic = document.querySelector('#profile_pic').files[0];
+    let old_pic = $('#old_pic').val();
+    if (profile_pic != undefined) {
+        profile_pic_baseimg = await getBase64(profile_pic);
+    }
+    let signature_baseimg = '';
+    let signature = document.querySelector('#signature').files[0];
+    let old_sign = $('#old_sign').val();
+    if (signature != undefined) {
+        signature_baseimg = await getBase64(signature);
+    }
+
+    let url = 'addUser';
+    let data = { name: name, mobile: mobile, email: email, address: address, gender: gender, dob: dob, profile_pic: profile_pic_baseimg, signature: signature_baseimg, old_pic: old_pic, old_sign: old_sign, userId: userId };
+    let ajaxData = await ajaxCall(url, data);
+    alert(ajaxData.message);
+    if(ajaxData.page_url != undefined) {
+        window.location = base_url + ajaxData.page_url;
     }
 }
