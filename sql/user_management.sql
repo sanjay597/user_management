@@ -1,0 +1,18 @@
+CREATE TABLE `user_management`.`user_master` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `role` VARCHAR(45) NOT NULL,
+  `mobile` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
+  `gender` VARCHAR(45) NOT NULL,
+  `dob` VARCHAR(45) NOT NULL,
+  `profile_pic` VARCHAR(45) NOT NULL,
+  `signature` VARCHAR(45) NOT NULL,
+  `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1 = Active, 0 = Inactive',
+  `created_by` INT(5) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `updated_by` INT(5) NOT NULL,
+  `updated_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
