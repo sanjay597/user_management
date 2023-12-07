@@ -28,8 +28,15 @@
                   <label for="password">Password</label>              
                 </div>
               </div>
-    
-              <input type="submit" name="login" value="Login" class="btn btn-primary btn-block"  onclick="login();"/>
+              <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-5">
+                  <input type="submit" name="login" value="Login" class="btn btn-primary btn-block"  onclick="login();"/>
+                </div>
+                <div class="col-lg-5">
+                  <a href="<?php echo base_url('user/register'); ?>"><input type="submit" name="Register" value="Register" class="btn btn-success btn-block"/></a>
+                </div>
+              </div>
           </div>
         </div>
       </div>

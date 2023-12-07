@@ -17,3 +17,6 @@ $route['admin/addUser'] = 'AdminController/addUser';
 $route['addUser'] = 'Welcome/addUser';
 $route['editUser/(:any)'] = 'Welcome/editUser/$1';
 $route['deleteUser'] = 'Welcome/deleteUser';
+$route['actionUser'] = 'Welcome/actionUser';
+$route['user/register'] = 'UserController/register';
+$route['user/addUser'] = 'Welcome/register';

@@ -2,7 +2,8 @@
 <html lang="en">
 
   <head>
-<title>Admin</title>
+
+<title>Register User</title>
 
 <!-- Bootstrap core CSS-->
 <?php echo link_tag('assets/vendor/bootstrap/css/bootstrap.min.css'); ?>
@@ -20,82 +21,68 @@
   </head>
 
   <body id="page-top">
-       <?php include APPPATH.'views/includes/header.php';?>
-
-
     <div id="wrapper">
-
-      <!-- Sidebar -->
-            <?php include APPPATH.'views/includes/sidebar.php';?>
       <div id="content-wrapper">
-        <input type="hidden" id="base_url" value="<?php echo base_url() ?>"/>
-
-        <div class="container-fluid">
+        <div class="container">
 
           <!-- Breadcrumbs-->
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
-              <a href="#">Edit User</a>
+              <a href="#">Register User</a>
             </li>
             <li class="breadcrumb-item active">Overview</li>
+            <li class="" style="position: absolute;right: 10%;"><a href="<?php echo base_url() ?>">Login</a></li>
           </ol>
 
           <!-- Icon Cards-->
           <div class="card">
             <div class="card-body">
-              <input type="hidden" value="<?php echo $data['id'] ?>" id="userId"/>
               <div class="row addUserRow">
                 <div class="col-lg-2">Name</div>
-                <div class="col-lg-10"><input type="text" class="form-control" value="<?php echo $data['name'] ?>" id="name"/></div>
+                <div class="col-lg-10"><input type="text" class="form-control" value="" id="name"/></div>
               </div>
               <div class="row addUserRow">
                   <div class="col-lg-2">Mobile</div>
-                  <div class="col-lg-10"><input type="text" class="form-control" value="<?php echo $data['mobile'] ?>" id="mobile"/></div>
+                  <div class="col-lg-10"><input type="text" class="form-control" value="" id="mobile"/></div>
               </div>
               <div class="row addUserRow">
                   <div class="col-lg-2">Email Id</div>
-                  <div class="col-lg-10"><input type="email" class="form-control" value="<?php echo $data['email'] ?>" id="email"/></div>
+                  <div class="col-lg-10"><input type="email" class="form-control" value="" id="email"/></div>
               </div>
               <div class="row addUserRow">
                   <div class="col-lg-2">Address</div>
-                  <div class="col-lg-10"><textarea value="" class="form-control" id="address"><?php echo $data['address'] ?></textarea></div>
+                  <div class="col-lg-10"><textarea value="" class="form-control" id="address"></textarea></div>
               </div>
               <div class="row addUserRow">
                   <div class="col-lg-2">Gender</div>
                   <div class="col-lg-10">
-                  
                     <select id="gender" class="form-control">
-                      <option value="" disabled>Select Gender</option>
-                      <option value="Male" <?php $data['gender'] == 'Male' ? 'Selected' : '' ?>>Male</option>
-                      <option value="Female" <?php $data['gender'] == 'Female' ? 'Selected' : '' ?>>Female</option>
+                      <option value="" disabled selected>Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
                     </select>
                   </div>
               </div>
               <div class="row addUserRow">
                   <div class="col-lg-2">DOB</div>
-                  <div class="col-lg-10"><input type="date" class="form-control" value="<?php echo $data['dob'] ?>" id="dob"/></div>
+                  <div class="col-lg-10"><input type="date" class="form-control" value="" id="dob"/></div>
               </div>
               <div class="row addUserRow">
                   <div class="col-lg-2">Profile Pic</div>
-                  <input type="hidden" value="<?php echo $data['profile_pic'] ?>" id="old_pic"/>
                   <div class="col-lg-10"><input type="file" class="form-control" value="" id="profile_pic"/></div>
               </div>
               <div class="row addUserRow">
                   <div class="col-lg-2">Signature</div>
-                  <input type="hidden" value="<?php echo $data['signature'] ?>" id="old_sign"/>
                   <div class="col-lg-10"><input type="file" class="form-control" value="" id="signature"/></div>
               </div>
               <div class="row addUserRow text-center">
-                  <div class="col-lg-12"><input type="button" class="btn btn-primary" value="Submit" onclick="updateUser();"/></div>
+                  <div class="col-lg-12"><input type="button" class="btn btn-primary" value="Submit" onclick="register();"/></div>
               </div>
             </div>
             </div>
           
           </div>
         <!-- /.container-fluid -->
-
-        <!-- Sticky Footer -->
-        <?php include APPPATH.'views/includes/footer.php';?>
 
       </div>
       <!-- /.content-wrapper -->
@@ -110,7 +97,7 @@
 
 
     <script src="<?php echo base_url('assets/vendor/jquery/jquery.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/js/users.js'); ?>" defer></script>
+    <script src="<?php echo base_url('assets/js/login.js'); ?>" defer></script>
     <script src="<?php echo base_url('assets/vendor/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
     <!-- Core plugin JavaScript-->
     <script src="<?php echo base_url('assets/vendor/jquery-easing/jquery.easing.min.js'); ?>"></script>

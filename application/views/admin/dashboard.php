@@ -3,7 +3,7 @@
 
   <head>
 
-<title>Super Admin</title>
+<title>Admin</title>
 
 <!-- Bootstrap core CSS-->
 <?php echo link_tag('assets/vendor/bootstrap/css/bootstrap.min.css'); ?>

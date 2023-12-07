@@ -31,8 +31,15 @@ let getUsers = async () => {
         let k = 1;
         for (let i = 0; i < ajaxData.data.length; i++) {
             let userData = ajaxData.data[i];
-            let editUserBtn = ajaxData.can_edit ? `<input type="button" class="btn btn-info" value="Edit" onclick="editUser(` + userData.id + `)"/> | ` : '';
-            let deleteUserBtn = ajaxData.can_delete ? `<input type="button" class="btn btn-` + (userData.status == 0 ? 'success' : 'danger') + `" value="` + (userData.status == 1 ? 'Inactive' : 'Active') + `" onclick="deleteUser(` + userData.id + ',' + userData.status + `)"/>` : '';
+            let deleteUserBtn = ``;
+            let actionUserBtn = ``;
+            let editUserBtn = ``;
+            if (userData.status != 2) {
+                editUserBtn = ajaxData.can_edit ? `<input type="button" class="btn btn-info" value="Edit" onclick="editUser(` + userData.id + `)"/> | ` : '';
+                deleteUserBtn = ajaxData.can_delete ? `<input type="button" class="btn btn-` + (userData.status == 1 ? 'danger' : 'success') + `" value="` + (userData.status == 1 ? 'Inactive' : 'Active') + `" onclick="deleteUser(` + userData.id + ',' + userData.status + `)"/>` : '';
+            } else {
+                actionUserBtn = `<input type="button" class="btn btn-success" value="Approve" onclick="actionUser(` + userData.id + ',' + 1 + `)"/> | <input type="button" class="btn btn-danger" value="Reject" onclick="actionUser(` + userData.id + ',' + 3 + `)"/>`;
+            }
             tbodyData += `<tr>`;
             tbodyData += `<td>` + k + `</td>`;
             tbodyData += `<td>` + userData.name + `</td>`;
@@ -41,8 +48,8 @@ let getUsers = async () => {
             tbodyData += `<td>` + userData.address + `</td>`;
             tbodyData += `<td>` + userData.gender + `</td>`;
             tbodyData += `<td>` + userData.dob + `</td>`;
-            tbodyData += `<td>` + (userData.status == 1 ? 'Active' : 'Inactive') + `</td>`;
-            tbodyData += `<td>` + editUserBtn + deleteUserBtn + `</td>`;
+            tbodyData += `<td>` + (userData.status == 1 ? 'Active' : (userData.status == 2 ? 'Pending' : 'Inactive')) + `</td>`;
+            tbodyData += `<td>` + editUserBtn + deleteUserBtn + actionUserBtn + `</td>`;
             k++;
         }
         $('#users_data').html(tbodyData);
@@ -97,7 +104,7 @@ let addUser = async () => {
     let data = { name: name, mobile: mobile, email: email, address: address, gender: gender, dob: dob, profile_pic: profile_pic_baseimg, signature: signature_baseimg };
     let ajaxData = await ajaxCall(url, data);
     alert(ajaxData.message);
-    if(ajaxData.page_url != undefined) {
+    if (ajaxData.page_url != undefined) {
         window.location = base_url + ajaxData.page_url;
     }
 }
@@ -123,6 +130,16 @@ let deleteUser = async (id, status) => {
     if (confirm('Are you sure, you want to ' + (status == 1 ? ' inactive ' : ' active ') + ' this user?')) {
         let url = 'deleteUser';
         let data = { id: id };
+        let ajaxData = await ajaxCall(url, data);
+        getUsers();
+        alert(ajaxData.message);
+    }
+}
+
+let actionUser = async (id, status) => {
+    if (confirm('Are you sure, you want to ' + (status == 1 ? ' approve ' : ' reject ') + ' this user?')) {
+        let url = 'actionUser';
+        let data = { id: id, status: status };
         let ajaxData = await ajaxCall(url, data);
         getUsers();
         alert(ajaxData.message);
@@ -178,7 +195,7 @@ let updateUser = async () => {
     let data = { name: name, mobile: mobile, email: email, address: address, gender: gender, dob: dob, profile_pic: profile_pic_baseimg, signature: signature_baseimg, old_pic: old_pic, old_sign: old_sign, userId: userId };
     let ajaxData = await ajaxCall(url, data);
     alert(ajaxData.message);
-    if(ajaxData.page_url != undefined) {
+    if (ajaxData.page_url != undefined) {
         window.location = base_url + ajaxData.page_url;
     }
 }

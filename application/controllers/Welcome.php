@@ -221,4 +221,92 @@ class Welcome extends CI_Controller
         session_destroy();
         redirect(base_url());
     }
+
+    public function register()
+    {
+        if (!$this->input->is_ajax_request()) {
+            $this->errorResponse['message'] = 'Invalid request';
+            echo json_encode($this->errorResponse);
+            exit();
+        }
+        $keyArr = ['name', 'mobile', 'email', 'address', 'gender', 'dob', 'profile_pic', 'signature'];
+        $this->validateParams($keyArr, $_POST);
+        //upload profile pic
+        $destinationPath = "assets/user/profile/";
+        $profile_capture_part1 = explode(";base64,", $_POST['profile_pic']);
+        $image_base641 = base64_decode($profile_capture_part1[1]);
+        $extPart1 = explode(':', $profile_capture_part1[0]);
+        $ext1 = explode('/', $extPart1[1]);
+        $myimgName1 = 'profile_pic_' . time() . '.' . $ext1[1];
+        $file1 = $destinationPath . $myimgName1;
+        file_put_contents($file1, $image_base641);
+
+        //upload signature
+        $destinationPathSign = "assets/user/signature/";
+        $sign_capture_part1 = explode(";base64,", $_POST['signature']);
+        $image_base642 = base64_decode($sign_capture_part1[1]);
+        $extPart1 = explode(':', $sign_capture_part1[0]);
+        $ext1 = explode('/', $extPart1[1]);
+        $myimgName2 = 'signature' . time() . '.' . $ext1[1];
+        $file2 = $destinationPathSign . $myimgName2;
+        file_put_contents($file2, $image_base642);
+        $insertData = [
+            'name' => $this->input->post('name'),
+            'mobile' => $this->input->post('mobile'),
+            'email' => $this->input->post('email'),
+            'address' => $this->input->post('address'),
+            'gender' => $this->input->post('gender'),
+            'dob' => $this->input->post('dob'),
+            'profile_pic' => $file1,
+            'signature' => $file2,
+            'role' => 'user',
+            'updated_date' => date('Y-m-d H:i:s'),
+            'created_date' => date('Y-m-d H:i:s'),
+            'status' => 2,
+        ];
+        $res = $this->db->insert('user_master', $insertData);
+
+        if ($res) {
+            $userId = isset($_POST['userId']) ? isset($_POST['userId']) : $this->db->insert_id();
+            if (!isset($_POST['userId'])) {
+                $enc_key = PASSWORD_ENC_KEY;
+                $password = rand(11111, 999999);
+                $this->db->set('password', "AES_ENCRYPT('{$password}', '{$enc_key}')", false)->where('id = ' . $userId)->update('user_master');
+            }
+            $this->errorResponse['page_url'] = base_url();
+            $this->errorResponse['success'] = 1;
+            $this->errorResponse['message'] = 'You have registered successfully';
+            echo json_encode($this->errorResponse);
+            exit();
+        } else {
+            $this->errorResponse['message'] = 'User registration failed';
+            echo json_encode($this->errorResponse);
+            exit();
+        }
+    }
+
+    public function actionUser()
+    {
+        if ($_SESSION['role'] == 'user') {
+            $this->errorResponse['message'] = 'Access denied';
+            echo json_encode($this->errorResponse);
+            exit();
+        }
+        if (!$this->input->is_ajax_request()) {
+            $this->errorResponse['message'] = 'Invalid request';
+            echo json_encode($this->errorResponse);
+            exit();
+        }
+        $res = $this->db->set('status', $this->input->post('status'), false)->where('id', $this->input->post('id'))->update('user_master');
+        if ($res) {
+            $this->errorResponse['success'] = 1;
+            $this->errorResponse['message'] = 'User status changed successfully';
+            echo json_encode($this->errorResponse);
+            exit();
+        } else {
+            $this->errorResponse['message'] = 'User status change failed';
+            echo json_encode($this->errorResponse);
+            exit();
+        }
+    }
 }
