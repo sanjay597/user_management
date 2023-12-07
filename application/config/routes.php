@@ -24,3 +24,5 @@ $route['user/addUser'] = 'Welcome/register';
 //for task 2 use this route
 $route['getPageUsers'] = 'Pagination';
 $route['getPageUsers/(:num)'] = 'Pagination/index/$1';
+$route['upload_media/(:num)'] = 'Pagination/upload/$1';
+$route['do_upload'] = 'Pagination/do_upload';

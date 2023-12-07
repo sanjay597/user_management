@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>CodeIgniter Pagination</title>
+        <title>Pagination</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
@@ -32,6 +32,7 @@
                             <th>DOJ</th>
                             <th>Blood Group</th>
                             <th>Address</th>
+                            <th>Upload Identity</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,6 +47,7 @@
                                 <td><?=$user->doj?></td>
                                 <td><?=$user->blood_group?></td>
                                 <td><?=$user->address?></td>
+                                <td><a href="<?php echo base_url('upload_media/'). $user->id ?>">Upload</a></td>
                             </tr>
                         <?php endforeach;?>
                     </tbody>

@@ -8,7 +8,9 @@ application/logs/*
 
 !application/*/.htaccess
 
-assets/user/*
+assets/user/profile/*
+assets/user/signature/*
+assets/user/uploads/*
 
 composer.lock
 tests/mocks/database/ci_test.sqlite
