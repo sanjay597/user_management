@@ -20,3 +20,7 @@ $route['deleteUser'] = 'Welcome/deleteUser';
 $route['actionUser'] = 'Welcome/actionUser';
 $route['user/register'] = 'UserController/register';
 $route['user/addUser'] = 'Welcome/register';
+
+//for task 2 use this route
+$route['getPageUsers'] = 'Pagination';
+$route['getPageUsers/(:num)'] = 'Pagination/index/$1';

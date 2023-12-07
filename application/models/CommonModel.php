@@ -33,4 +33,35 @@ class CommonModel extends CI_Model
         }
         return $response;
     }
+
+    public function get_count($searchStr = '')
+    {
+        $this->db->select('count(*) as allcount');
+        $this->db->from('pagination_users');
+
+        if ($searchStr != '') {
+            $match = ['designation' => $searchStr, 'dob' => $searchStr, 'doj' => $searchStr, 'blood_group' => $searchStr, 'mobile' => $searchStr, 'email' => $searchStr, 'address' => $searchStr];
+            $query = $this->db->like('name', $searchStr, 'both');
+            $this->db->or_like($match);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+
+        return $result[0]['allcount'];
+    }
+
+    public function getPaginationUsers($limit, $start, $searchStr = '')
+    {
+        $this->db->select('*');
+        $this->db->from('pagination_users');
+    
+        if($searchStr != ''){
+            $match = ['designation' => $searchStr, 'dob' => $searchStr, 'doj' => $searchStr, 'blood_group' => $searchStr, 'mobile' => $searchStr, 'email' => $searchStr, 'address' => $searchStr];
+            $query = $this->db->like('name', $searchStr, 'both');
+            $this->db->or_like($match);
+        }
+        $this->db->limit($start, $limit); 
+        $query = $this->db->get();
+        return $query->result();
+    }
 }
